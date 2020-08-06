@@ -4,6 +4,7 @@ PIPELINE_CONFIG_PATH="configs/${1}"
 MODEL_DIR="models/${1}"
 echo "Usage: ${USAGE}"
 
+mkdir $MODEL_DIR
 COMMAND="
 cp ${PIPELINE_CONFIG_PATH} ${MODEL_DIR}/model.config &&
 python lib/tfmodels/research/object_detection/model_main_tf2.py \
