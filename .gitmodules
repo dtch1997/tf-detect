@@ -1,6 +1,6 @@
 [submodule "lib/tfmodels"]
 	path = lib/tfmodels
 	url = https://github.com/tensorflow/models.git
-[submodule "lib/Crowdhuman-dataset-prep"]
-	path = lib/Crowdhuman-dataset-prep
-	url = git@github.com:dtch1997/Crowdhuman-dataset-prep
+[submodule "lib/CrowdHuman-dataset-prep"]
+	path = lib/CrowdHuman-dataset-prep
+	url = git@github.com:dtch1997/CrowdHuman-dataset-prep.git
