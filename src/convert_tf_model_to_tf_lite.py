@@ -9,7 +9,7 @@ from PIL import Image
 parser = argparse.ArgumentParser(description="Convert a TF SavedModel to a TFLite model")
 parser.add_argument("--model-name", help="Name of the model. See tools/train_model.sh for semantics of model name")
 parser.add_argument("--dataset", help="Name of the TFRecord dataset that should be used for quantization", default="crowdhuman_debug") 
-parser.add_argument("--num-samples", help="Number of samples to calibrate on", default=100)
+parser.add_argument("--num-samples", help="Number of samples to calibrate on", type=int, default=100)
 
 def fake_data_gen(num_samples):
     def representative_dataset_gen():
@@ -23,8 +23,8 @@ def make_data_gen(dataset_name, num_samples):
     """
     if dataset_name == "fake":
         return fake_data_gen(num_samples)
-    
-    datadir = f'data/raw/{dataset_name}'
+
+    datadir = pathlib.Path('data/raw') / dataset_name
     imgdir = datadir / 'Images'
     
     def representative_dataset_gen():
