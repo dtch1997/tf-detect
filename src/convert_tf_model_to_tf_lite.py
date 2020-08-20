@@ -14,7 +14,7 @@ parser.add_argument("--num-samples", help="Number of samples to calibrate on", t
 def fake_data_gen(num_samples):
     def representative_dataset_gen():
         for i in range(num_samples):
-            yield [np.ones(1, 96, 96, 3).astype(np.uint8)]
+            yield [np.ones((1, 96, 96, 3)).astype(np.float32)]
     return representative_dataset_gen
 
 def make_data_gen(dataset_name, num_samples):
@@ -43,7 +43,6 @@ def main():
 
     converter = tf.lite.TFLiteConverter.from_saved_model(model_savedir, signature_keys=['serving_default'])
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
-    converter.experimental_new_converter = True
     converter.representative_dataset = make_data_gen(args.dataset, args.num_samples)
     # Ensure that if any ops can't be quantized, the converter throws an error
     converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
