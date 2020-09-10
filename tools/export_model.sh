@@ -14,6 +14,8 @@ python lib/tfmodels/research/object_detection/exporter_main_v2.py \
 	--output_directory $EXPORT_DIR
 
 python src/convert_tf_model_to_tf_lite.py \
-	--model-name $MODEL_NAME
+	--model-name $MODEL_NAME \
+	--dataset crowdhuman_debug \
+	--num-samples 100
 
 xxd -i "${EXPORT_DIR}/model.tflite" > "${EXPORT_DIR}/model_data.cc"

@@ -1,5 +1,8 @@
 data/tfrecord/*
 data/raw/
+data/vww_tfrecord/*
+data/classification_tfrecord/*
+data/regression_tfrecord/*
 models/*
 exported_models/*
 

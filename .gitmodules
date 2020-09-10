@@ -4,3 +4,6 @@
 [submodule "lib/CrowdHuman-dataset-prep"]
 	path = lib/CrowdHuman-dataset-prep
 	url = git@github.com:dtch1997/CrowdHuman-dataset-prep.git
+[submodule "lib/visualwakewords"]
+	path = lib/visualwakewords
+	url = https://github.com/Mxbonn/visualwakewords.git
