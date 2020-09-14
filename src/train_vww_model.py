@@ -114,11 +114,7 @@ def main():
     CKPT_PATH = get_checkpoint_dir(args)
     
     model = build_model(input_shape, args.alpha)
-    if pathlib.Path(CKPT_PATH).exists():
-        print("Loading checkpoint")
-        model.load_weights(CKPT_PATH)
-    else:
-        print("Model checkpoint not found, new model initialized")
+    model.load_weights(CKPT_PATH)
     
     if not args.deploy:
         train_dataset = load_dataset(args.dataset, input_shape, split="train").shuffle(1024).batch(args.batch_size)
@@ -135,7 +131,13 @@ def main():
             metrics=['accuracy'])
         
         callbacks = [
-            tf.keras.callbacks.ModelCheckpoint(CKPT_PATH, save_weights_only=True, monitor='accuracy', save_best_only=True, save_freq='epoch')
+            tf.keras.callbacks.ModelCheckpoint(
+                CKPT_PATH, 
+                save_weights_only=True, 
+                monitor='accuracy',
+                mode = 'max',
+                save_best_only=True, 
+                save_freq='epoch')
         ]
         
         history = model.fit(x = train_dataset, validation_data = val_dataset, epochs=args.epochs, callbacks=callbacks, verbose=args.verbose)
