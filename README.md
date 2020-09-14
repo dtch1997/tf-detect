@@ -30,6 +30,8 @@ Convert the model to Tensorflow Lite Micro:
 bash src/convert_tf_lite_to_tf_micro.sh MODEL_NAME
 ```
 
+The final model is stored in `exported_models/MODEL_NAME/model_data.cc`. The model parameters should require 322kb. 
+
 ## Custom training
 To edit model hyperparameters, set the corresponding flags in `src/train_vww_model.py`:
 ```
