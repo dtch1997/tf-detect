@@ -32,6 +32,9 @@ parser.add_argument("--learning-rate", type=float, default=1e-3,
 parser.add_argument("--decay-rate", type=float, default=0.98,
                     help="Number of steps to decay learning rate after")
 
+parser.add_argument("--deploy", action='store_true',
+                    help="Set flag to skip training and simply export the trained model")
+
 def _example_to_tensors(example, input_shape):
     """
     @brief: Read a serialized tf.train.Example and convert it to a (image, label) pair of tensors.
@@ -117,25 +120,26 @@ def main():
     else:
         print("Model checkpoint not found, new model initialized")
     
-    train_dataset = load_dataset(args.dataset, input_shape, split="train").shuffle(1024).batch(args.batch_size)
-    val_dataset = load_dataset(args.dataset, input_shape, split="val").shuffle(1024).batch(args.batch_size)
-    
-    lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-        args.learning_rate,
-        decay_steps=100000,
-        decay_rate=args.decay_rate,
-        staircase=True)
-    
-    model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=lr_schedule),
-        loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
-        metrics=['accuracy'])
-    
-    callbacks = [
-        tf.keras.callbacks.ModelCheckpoint(CKPT_PATH, save_weights_only=True, monitor='accuracy', save_best_only=True, save_freq='epoch')
-    ]
-    
-    history = model.fit(x = train_dataset, validation_data = val_dataset, epochs=args.epochs, callbacks=callbacks, verbose=args.verbose)
-    
+    if not args.deploy:
+        train_dataset = load_dataset(args.dataset, input_shape, split="train").shuffle(1024).batch(args.batch_size)
+        val_dataset = load_dataset(args.dataset, input_shape, split="val").shuffle(1024).batch(args.batch_size)
+        
+        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+            args.learning_rate,
+            decay_steps=100000,
+            decay_rate=args.decay_rate,
+            staircase=True)
+        
+        model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=lr_schedule),
+            loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+            metrics=['accuracy'])
+        
+        callbacks = [
+            tf.keras.callbacks.ModelCheckpoint(CKPT_PATH, save_weights_only=True, monitor='accuracy', save_best_only=True, save_freq='epoch')
+        ]
+        
+        history = model.fit(x = train_dataset, validation_data = val_dataset, epochs=args.epochs, callbacks=callbacks, verbose=args.verbose)
+        
     print(f"Model name: {get_model_name(args)}")
     model.save(get_model_dir(args))
 
