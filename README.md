@@ -30,7 +30,7 @@ Convert the model to Tensorflow Lite Micro:
 bash src/convert_tf_lite_to_tf_micro.sh MODEL_NAME
 ```
 
-## Help
+## Custom training
 To edit model hyperparameters, set the corresponding flags in `src/train_vww_model.py`:
 ```
 python src/train_vww_model.py --help
@@ -69,6 +69,30 @@ optional arguments:
                         Number of steps to decay learning rate after
   --deploy              Set flag to skip training and simply export the
                         trained model
+```
+
+## Custom deployment
+To edit conversion hyperparameters, set the corresponding flags in `src/convert_tf_model_to_tf_lite.py`:
+```
+usage: convert_tf_model_to_tf_lite.py [-h] [--model-name MODEL_NAME]
+                                      [--dataset DATASET]
+                                      [--num-samples NUM_SAMPLES]
+                                      [--input-height INPUT_HEIGHT]
+                                      [--input-width INPUT_WIDTH]
+
+Convert a TF SavedModel to a TFLite model
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --model-name MODEL_NAME
+                        Name of the model. See tools/train_model.sh for
+                        semantics of model name
+  --dataset DATASET     Name of the TFRecord dataset that should be used for
+                        quantization
+  --num-samples NUM_SAMPLES
+                        Number of samples to calibrate on
+  --input-height INPUT_HEIGHT
+  --input-width INPUT_WIDTH
 ```
 
 ## References: 
