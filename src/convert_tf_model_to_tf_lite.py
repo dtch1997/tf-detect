@@ -47,7 +47,7 @@ def make_data_gen(dataset_name, num_samples, input_shape):
 def main():
     args = parser.parse_args()
     input_shape = ImgShape(height=args.input_height, width=args.input_width, channels=3)
-    model_savedir = f'models/{args.model_name}/saved_model'
+    model_savedir = f'exported_models/{args.model_name}/saved_model'
 
     converter = tf.lite.TFLiteConverter.from_saved_model(model_savedir, signature_keys=['serving_default'])
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
@@ -58,7 +58,7 @@ def main():
     converter.inference_input_type = tf.int8
     converter.inference_output_type = tf.int8
     quantized_model = converter.convert()
-    bytes = open(f'models/{args.model_name}/model.tflite', "wb").write(quantized_model)
+    bytes = open(f'exported_models/{args.model_name}/model.tflite', "wb").write(quantized_model)
 
     
 if __name__ == "__main__":
