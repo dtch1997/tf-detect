@@ -20,11 +20,17 @@ parser.add_argument("--model-prefix", default="mobilenet",
                     help="Prefix to be used in naming the model")
 parser.add_argument("--alpha", type=float, default=0.25,
                     help="Depth multiplier. The smaller it is, the smaller the resulting model.")
-parser.add_argument("--epochs", type=int, default=20)
-parser.add_argument("--batch-size", type=int, default=512)
-parser.add_argument("--verbose", type=int, default=2)
-parser.add_argument("--learning-rate", type=float, default=1e-3)
-parser.add_argument("--decay-rate", type=float, default=0.98)
+parser.add_argument("--epochs", type=int, default=20, 
+                    help="Training procedure runs through the whole dataset once per epoch.")
+parser.add_argument("--batch-size", type=int, default=512,
+                    help="Number of examples to process concurrently")
+parser.add_argument("--verbose", type=int, default=2,
+                    help="Printing verbosity of Tensorflow model.fit()"
+                    "Set --verbose=1 for per-batch progress bar, --verbose=2 for per-epoch")
+parser.add_argument("--learning-rate", type=float, default=1e-3,
+                    help="Initial learning rate of SGD training")
+parser.add_argument("--decay-rate", type=float, default=0.98,
+                    help="Number of steps to decay learning rate after")
 
 def _example_to_tensors(example, input_shape):
     """
