@@ -1,14 +1,11 @@
 import argparse
 import tensorflow as tf
 import pathlib
-import PIL
-import numpy as np
 
-import pathlib
 from collections import namedtuple
 
 # Disable a lot of useless warnings
-tf.get_logger().setLevel('WARNING')
+tf.get_logger().setLevel('ERROR')
 ImageShape = namedtuple('ImageShape', 'height width channels')
 
 parser = argparse.ArgumentParser(description="Train a model to predict whether an image contains a person")
@@ -21,7 +18,7 @@ parser.add_argument("--input-width", default=64, type=int,
                     help="Width of input")
 parser.add_argument("--model-prefix", default="mobilenet",
                     help="Prefix to be used in naming the model")
-parser.add_argument("--alpha", type=float, default=0.125,
+parser.add_argument("--alpha", type=float, default=0.25,
                     help="Depth multiplier. The smaller it is, the smaller the resulting model.")
 parser.add_argument("--epochs", type=int, default=20)
 parser.add_argument("--batch-size", type=int, default=512)
@@ -75,13 +72,10 @@ def build_model(input_shape, alpha):
         A newly initialized model with the given architecture. 
     """
     input_shape = (input_shape.height, input_shape.width, input_shape.channels)
-    data_augmentation = tf.keras.Sequential([
-        tf.keras.layers.experimental.preprocessing.RandomFlip('horizontal'),
-    ])
     backbone = tf.keras.applications.MobileNet(
-        input_shape = input_shape, alpha=alpha, include_top=False, weights=None
+        input_shape = input_shape, alpha=alpha, include_top=False, weights='imagenet'
     )
-    preprocess_input = tf.keras.applications.mobilenet_v2.preprocess_input
+    preprocess_input = tf.keras.applications.mobilenet.preprocess_input
     regressor = tf.keras.Sequential(
         [tf.keras.layers.GlobalAveragePooling2D(),
          tf.keras.layers.Flatten(),
@@ -90,7 +84,6 @@ def build_model(input_shape, alpha):
 
     inputs = tf.keras.Input(input_shape)
     x = inputs
-    x = data_augmentation(x)
     x = preprocess_input(x)
     x = backbone(x)
     outputs = regressor(x)
@@ -121,17 +114,9 @@ def main():
     train_dataset = load_dataset(args.dataset, input_shape, split="train").shuffle(1024).batch(args.batch_size)
     val_dataset = load_dataset(args.dataset, input_shape, split="val").shuffle(1024).batch(args.batch_size)
     
-    # Inspect input values
-    """
-    for image, label in train_dataset.shuffle(128).take(5):
-        print(image, label)
-    for image, label in val_dataset.shuffle(128).take(5):
-        print(image, label)
-    """
-    
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
         args.learning_rate,
-        decay_steps=150,
+        decay_steps=100000,
         decay_rate=args.decay_rate,
         staircase=True)
     
@@ -140,8 +125,7 @@ def main():
         metrics=['accuracy'])
     
     callbacks = [
-        tf.keras.callbacks.ModelCheckpoint(CKPT_PATH, save_weights_only=True, monitor='accuracy', save_best_only=True, save_freq='epoch'),
-        # tf.keras.callbacks.EarlyStopping(monitor='accuracy', patience=4)
+        tf.keras.callbacks.ModelCheckpoint(CKPT_PATH, save_weights_only=True, monitor='accuracy', save_best_only=True, save_freq='epoch')
     ]
     
     history = model.fit(x = train_dataset, validation_data = val_dataset, epochs=args.epochs, callbacks=callbacks, verbose=args.verbose)
