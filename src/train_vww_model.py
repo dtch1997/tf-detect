@@ -114,7 +114,9 @@ def main():
     CKPT_PATH = get_checkpoint_dir(args)
     
     model = build_model(input_shape, args.alpha)
-    model.load_weights(CKPT_PATH)
+    if pathlib.Path(CKPT_PATH).exists():
+        print("Previous checkpoint found; loading saved weights")
+        model.load_weights(CKPT_PATH)
     
     if not args.deploy:
         train_dataset = load_dataset(args.dataset, input_shape, split="train").shuffle(1024).batch(args.batch_size)
