@@ -84,8 +84,7 @@ def build_model(input_shape, alpha):
     backbone = tf.keras.applications.MobileNet(
         input_shape = input_shape, alpha=alpha, include_top=False, weights='imagenet'
     )
-    preprocess_input = tf.keras.applications.mobilenet.preprocess_input
-    regressor = tf.keras.Sequential(
+    classifier = tf.keras.Sequential(
         [tf.keras.layers.GlobalAveragePooling2D(),
          tf.keras.layers.Flatten(),
          tf.keras.layers.Dense(1, activation=None)]
@@ -93,9 +92,8 @@ def build_model(input_shape, alpha):
 
     inputs = tf.keras.Input(input_shape)
     x = inputs
-    x = preprocess_input(x)
     x = backbone(x)
-    outputs = regressor(x)
+    outputs = classifier(x)
     model = tf.keras.Model(inputs, outputs)
     return model
 
