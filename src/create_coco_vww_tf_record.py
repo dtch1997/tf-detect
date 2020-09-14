@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-r"""Convert raw COCO dataset to TFRecord for object_detection.
-
-This tool supports data generation for object detection (boxes, masks),
-keypoint detection, and DensePose.
+r"""Convert raw COCO dataset to VisualWakeWords dataset for binary classification. 
+TFRecords are labelled with whether they contain at least one person or not. 
 
 Please note that this tool creates sharded output files.
 
