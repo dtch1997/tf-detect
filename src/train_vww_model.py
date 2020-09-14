@@ -12,9 +12,9 @@ parser = argparse.ArgumentParser(description="Train a model to predict whether a
 
 parser.add_argument("--dataset", default="coco2014", 
                     help="Name of dataset. Subdirectory of data/vww_tfrecord")
-parser.add_argument("--input-height", default=64, type=int, 
+parser.add_argument("--input-height", default=96, type=int, 
                     help="Height of input")
-parser.add_argument("--input-width", default=64, type=int, 
+parser.add_argument("--input-width", default=96, type=int, 
                     help="Width of input")
 parser.add_argument("--model-prefix", default="mobilenet",
                     help="Prefix to be used in naming the model")
@@ -100,7 +100,7 @@ def build_model(input_shape, alpha):
     return model
 
 def get_model_name(args):
-    return f"classifier_{args.model_prefix}_{args.alpha}_{args.input_height}_{args.input_width}_{args.dataset}"
+    return f"vww_{args.model_prefix}_{args.alpha}_{args.input_height}_{args.input_width}_{args.dataset}"
 
 def get_checkpoint_dir(args):
     return f'models/{get_model_name(args)}/best_val.ckpt'
