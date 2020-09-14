@@ -16,9 +16,9 @@ bash src/download_mscoco.sh data/raw/coco2014 2014
 Train a model:
 ```
 python src/train_vww_model.py
-# The training script prints the model name to stdout. 
-# E.g. 'Model name: vww_mobilenet_0.25_96_96_coco2014`
 ```
+The training script prints the model name to stdout, e.g. `Model name: vww_mobilenet_0.25_96_96_coco2014`
+The checkpoints are saved in `models`. The `saved_model.pb` is saved in `exported_models`. 
 
 Convert the model to Tensorflow Lite:
 ```
